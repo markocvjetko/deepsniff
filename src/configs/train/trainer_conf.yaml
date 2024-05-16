@@ -1,0 +1,40 @@
+meta:
+  project_name: &project_name DeepSniff-2.0.
+  author: Marko Cvjetko
+  job_type: debug
+  logging: false #wandb or false
+  resume_from_checkpoint: false
+  checkpoint_path: 'results_21/mobilenetv3-step=266-epoch=00-val_loss=0.3573.ckpt' #'results_18/resnet18-step=2493-epoch=08-val_loss=0.2286.ckpt'
+
+trainer: &trainer
+  max_epochs: &max_epochs 5
+  check_val_every_n_epoch: 1
+  log_every_n_steps: 10
+  enable_progress_bar: true
+  precision: '16-mixed'
+  accelerator: 'gpu'
+  devices: -1     #for gpu: list of devices e.g. [0, 1, 2] or -1 for all 
+  enable_checkpointing: true
+
+model_checkpoint_callback: &checkpoint_callback
+  monitor: 'val_loss'
+  save_top_k: 20
+  every_n_train_steps: null
+  save_on_train_epoch_end: false
+  dirpath: &dirpath null #./saves/default_train_classification_modified_output_dim_2_testing     
+                        #if null, then config name and current datetime is used
+
+early_stopping_callback: &early_stopping_callback
+  monitor: 'val_loss'
+  min_delta: 0.00
+  patience: 30
+  verbose: false
+  mode: 'min'
+
+wandb:
+  name: *dirpath
+  group: default_train_classification
+  job_type: training
+  #key: 32ce5c18cf6413d73c4dc1480af30e2119ae9713    #should be provided as an environment variable (export WNB_API_KEY=32ce5c18cf6413d73c4dc1480af30e2119ae9713)
+
+matmul_precision: medium

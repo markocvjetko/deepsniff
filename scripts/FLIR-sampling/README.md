@@ -1,0 +1,1 @@
+Scripts written for sampling of sessions and trails from the FLIR dataset.
